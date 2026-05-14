@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="StreamBeat - Your ultimate guide to live TV streaming, cord-cutting, and entertainment">
+    <title>StreamBeat - Live TV Streaming Blog</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Light Mode */
+            --bg-light: #fafafa;
+            --bg-card-light: #ffffff;
+            --text-primary-light: #1a1a1a;
+            --text-secondary-light: #666666;
+            --accent-light: #ff4757;
+            --accent-secondary-light: #00b4db;
+            --border-light: #e0e0e0;
+            --hover-light: #f5f5f5;
+
+            /* Dark Mode */
+            --bg-dark: #0f1419;
+            --bg-card-dark: #1a1f2e;
+            --text-primary-dark: #ffffff;
+            --text-secondary-dark: #b0b8c1;
+            --accent-dark: #ff6b7a;
+            --accent-secondary-dark: #00d4ff;
+            --border-dark: #2a3142;
+            --hover-dark: #252d3d;
+
+            /* Active Theme */
+            --bg: var(--bg-light);
+            --bg-card: var(--bg-card-light);
+            --text-primary: var(--text-primary-light);
+            --text-secondary: var(--text-secondary-light);
+            --accent: var(--accent-light);
+            --accent-secondary: var(--accent-secondary-light);
+            --border: var(--border-light);
+            --hover: var(--hover-light);
+
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html.dark-mode {
+            --bg: var(--bg-dark);
+            --bg-card: var(--bg-card-dark);
+            --text-primary: var(--text-primary-dark);
+            --text-secondary: var(--text-secondary-dark);
+            --accent: var(--accent-dark);
+            --accent-secondary: var(--accent-secondary-dark);
+            --border: var(--border-dark);
+            --hover: var(--hover-dark);
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.7;
+            transition: var(--transition);
+            overflow-x: hidden;
+        }
+
+        /* HEADER */
+        header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            transition: var(--transition);
+        }
+
+        html.dark-mode header {
+            background: rgba(15, 20, 25, 0.95);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo span {
+            display: block;
+            font-size: 0.5em;
+            color: var(--text-secondary);
+            letter-spacing: 2px;
+            font-family: 'Lato', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            -webkit-background-clip: unset;
+            -webkit-text-fill-color: unset;
+            background-clip: unset;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .search-wrapper {
+            position: relative;
+        }
+
+        .search-input {
+            background: var(--hover);
+            border: 1px solid var(--border);
+            padding: 0.7rem 1.2rem;
+            border-radius: 25px;
+            color: var(--text-primary);
+            width: 250px;
+            transition: var(--transition);
+            font-family: 'Lato', sans-serif;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-secondary);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+            width: 300px;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .theme-toggle {
+            background: var(--hover);
+            border: 1px solid var(--border);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent);
+            color: var(--bg);
+            transform: rotate(20deg);
+        }
+
+        /* HERO SECTION */
+        .hero {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            text-align: center;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            letter-spacing: -1.5px;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            font-weight: 300;
+        }
+
+        /* CONTAINER */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* FEATURED ARTICLE */
+        .featured-section {
+            margin: 4rem 0;
+            animation: fadeInUp 0.8s ease-out 0.1s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .featured-article {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            padding: 3rem;
+            transition: var(--transition);
+        }
+
+        .featured-article:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent);
+        }
+
+        .featured-image {
+            width: 100%;
+            height: 350px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .featured-image::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: movePattern 20s linear infinite;
+        }
+
+        @keyframes movePattern {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .featured-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .featured-tag {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            width: fit-content;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .featured-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+            letter-spacing: -0.5px;
+        }
+
+        .featured-content p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .read-more {
+            display: inline-block;
+            color: var(--accent);
+            font-weight: 700;
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .read-more:hover {
+            color: var(--accent-secondary);
+            transform: translateX(5px);
+        }
+
+        /* FILTERS & SEARCH */
+        .filters-section {
+            margin: 3rem 0;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .filter-label {
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .filter-tag {
+            background: var(--hover);
+            border: 1px solid var(--border);
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .filter-tag:hover,
+        .filter-tag.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        /* ARTICLES GRID */
+        .articles-section {
+            margin: 4rem 0;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            letter-spacing: -0.5px;
+        }
+
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        .article-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: var(--transition);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .article-card:hover {
+            border-color: var(--accent-secondary);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .article-thumbnail {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .article-thumbnail.tv { background: linear-gradient(135deg, var(--accent) 0%, #ff6b9d 100%); }
+        .article-thumbnail.streaming { background: linear-gradient(135deg, var(--accent-secondary) 0%, #00d4ff 100%); }
+        .article-thumbnail.guide { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .article-thumbnail.tech { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+
+        .article-card-content {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .article-category {
+            display: inline-block;
+            color: var(--accent);
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.8rem;
+        }
+
+        .article-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            line-height: 1.4;
+            letter-spacing: -0.3px;
+        }
+
+        .article-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            flex-grow: 1;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .article-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .article-date {
+            font-weight: 600;
+        }
+
+        .article-read-time {
+            font-style: italic;
+        }
+
+        /* NO RESULTS */
+        .no-results {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .no-results-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .no-results h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-top: 2rem;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .sidebar h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .sidebar-list {
+            list-style: none;
+        }
+
+        .sidebar-list li {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-list li:last-child {
+            border-bottom: none;
+        }
+
+        .sidebar-list a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .sidebar-list a:hover {
+            color: var(--accent-secondary);
+            transform: translateX(5px);
+            display: inline-block;
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+            color: var(--text-secondary);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-section a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--border);
+            padding-top: 2rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .featured-article {
+                grid-template-columns: 1fr;
+                padding: 2rem;
+                gap: 1.5rem;
+            }
+
+            .featured-content h2 {
+                font-size: 1.8rem;
+            }
+
+            .featured-image {
+                height: 250px;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+
+            .search-input:focus {
+                width: 100%;
+            }
+
+            .header-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .nav-right {
+                flex-direction: column;
+            }
+
+            .articles-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* ANIMATIONS */
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--hover);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-secondary);
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                StreamBeat
+                <span>Live TV Streaming Blog</span>
+            </div>
+            <div class="nav-right">
+                <div class="search-wrapper">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search articles...">
+                </div>
+                <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">🌙</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <div class="hero">
+        <h1>Your Guide to Live TV Streaming</h1>
+        <p>Cutting the cord has never been easier. Explore streaming services, find your favorite channels, and master the art of entertainment.</p>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="container">
+        <!-- FEATURED ARTICLE -->
+        <div class="featured-section">
+            <div class="featured-article">
+                <div class="featured-image">📺</div>
+                <div class="featured-content">
+                    <span class="featured-tag">Featured</span>
+                    <h2>The Future of Live TV: Streaming Wars Explained</h2>
+                    <p>Discover how traditional broadcast TV is transforming into personalized streaming experiences. Learn about the platforms changing the entertainment landscape and what it means for your viewing habits.</p>
+                    <div class="article-meta">
+                        <div class="meta-item">📅 May 10, 2024</div>
+                        <div class="meta-item">✍️ By StreamBeat Team</div>
+                        <div class="meta-item">⏱️ 8 min read</div>
+                    </div>
+                    <a href="#" class="read-more">Read Full Article →</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- FILTERS -->
+        <div class="filters-section">
+            <span class="filter-label">Filter by:</span>
+            <button class="filter-tag active" onclick="filterArticles('all')">All</button>
+            <button class="filter-tag" onclick="filterArticles('streaming')">Streaming Tips</button>
+            <button class="filter-tag" onclick="filterArticles('guide')">Guides</button>
+            <button class="filter-tag" onclick="filterArticles('tech')">Technology</button>
+        </div>
+
+        <!-- ARTICLES GRID -->
+        <div class="articles-section">
+            <h2 class="section-title">Latest Articles</h2>
+            <div class="articles-grid" id="articlesGrid">
+                <!-- Articles will be loaded here -->
+            </div>
+            <div id="noResults" class="no-results hidden">
+                <div class="no-results-icon">🔍</div>
+                <h3>No articles found</h3>
+                <p>Try adjusting your search or filters</p>
+            </div>
+        </div>
+
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <h3>Popular Tags</h3>
+            <ul class="sidebar-list">
+                <li><a href="#" onclick="filterArticles('netflix')">Netflix</a></li>
+                <li><a href="#" onclick="filterArticles('hls')">HLS Streaming</a></li>
+                <li><a href="#" onclick="filterArticles('cordcutting')">Cord Cutting</a></li>
+                <li><a href="#" onclick="filterArticles('4k')">4K Resolution</a></li>
+                <li><a href="#" onclick="filterArticles('sports')">Sports Streaming</a></li>
+                <li><a href="#" onclick="filterArticles('live')">Live TV</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>About StreamBeat</h4>
+                <p style="color: var(--text-secondary); line-height: 1.6;">Your trusted source for live TV streaming guides, cord-cutting tips, and entertainment technology news.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Categories</h4>
+                <ul>
+                    <li><a href="#">Streaming Guides</a></li>
+                    <li><a href="#">Service Reviews</a></li>
+                    <li><a href="#">Technology News</a></li>
+                    <li><a href="#">How-To Articles</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#">Blog Archive</a></li>
+                    <li><a href="#">Subscribe to Newsletter</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 StreamBeat. All rights reserved. | Your guide to live TV streaming</p>
+        </div>
+    </footer>
+
+    <script>
+        // ARTICLES DATA
+        const articles = [
+            {
+                id: 1,
+                title: "Best HLS Streaming Platforms in 2024",
+                excerpt: "Compare the top HLS streaming services and learn which one is right for your needs. We break down pricing, features, and channel availability.",
+                category: "streaming",
+                tags: ["hls", "streaming", "comparison"],
+                date: "May 15, 2024",
+                readTime: 7,
+                emoji: "🎬"
+            },
+            {
+                id: 2,
+                title: "How to Cut the Cord: A Beginner's Guide",
+                excerpt: "Ready to drop cable? This comprehensive guide shows you step-by-step how to transition from traditional TV to streaming services.",
+                category: "guide",
+                tags: ["cordcutting", "guide", "streaming"],
+                date: "May 12, 2024",
+                readTime: 10,
+                emoji: "✂️"
+            },
+            {
+                id: 3,
+                title: "Understanding Video Codecs: H.264 vs H.265",
+                excerpt: "Dive deep into the technical aspects of video streaming. Learn about codecs, bitrates, and how they affect your streaming quality.",
+                category: "tech",
+                tags: ["technology", "video", "codecs"],
+                date: "May 8, 2024",
+                readTime: 9,
+                emoji: "⚙️"
+            },
+            {
+                id: 4,
+                title: "Netflix vs Disney+ vs Prime Video: Complete Comparison",
+                excerpt: "A detailed breakdown of the three major streaming giants. Compare their libraries, original content, pricing, and streaming quality.",
+                category: "streaming",
+                tags: ["netflix", "streaming", "comparison"],
+                date: "May 5, 2024",
+                readTime: 12,
+                emoji: "📊"
+            },
+            {
+                id: 5,
+                title: "The Best Sports Streaming Services",
+                excerpt: "Want to catch live games without cable? Discover the best apps and services for streaming sports like football, basketball, and more.",
+                category: "guide",
+                tags: ["sports", "live", "streaming"],
+                date: "May 1, 2024",
+                readTime: 8,
+                emoji: "⚽"
+            },
+            {
+                id: 6,
+                title: "4K Streaming: Is Your Internet Ready?",
+                excerpt: "Everything you need to know about 4K streaming. Learn about bandwidth requirements, supported platforms, and how to optimize your setup.",
+                category: "tech",
+                tags: ["4k", "technology", "streaming"],
+                date: "April 28, 2024",
+                readTime: 6,
+                emoji: "📺"
+            },
+            {
+                id: 7,
+                title: "Building Your Perfect Streaming Setup",
+                excerpt: "From smart TVs to media centers. Learn how to set up the perfect home entertainment system for streaming content.",
+                category: "guide",
+                tags: ["guide", "setup", "technology"],
+                date: "April 25, 2024",
+                readTime: 11,
+                emoji: "🏠"
+            },
+            {
+                id: 8,
+                title: "Live TV Streaming Tips and Tricks",
+                excerpt: "Maximize your streaming experience with these pro tips. Learn about buffering solutions, quality settings, and device compatibility.",
+                category: "streaming",
+                tags: ["live", "streaming", "tips"],
+                date: "April 22, 2024",
+                readTime: 5,
+                emoji: "💡"
+            },
+            {
+                id: 9,
+                title: "The Rise of IPTV: What You Need to Know",
+                excerpt: "Explore the world of IPTV and how it's revolutionizing how we watch television. Learn about protocols, benefits, and legal considerations.",
+                category: "tech",
+                tags: ["iptv", "technology", "streaming"],
+                date: "April 19, 2024",
+                readTime: 9,
+                emoji: "🌐"
+            }
+        ];
+
+        let allArticles = [...articles];
+        let currentFilter = 'all';
+
+        // RENDER ARTICLES
+        function renderArticles(articlesToRender = allArticles) {
+            const grid = document.getElementById('articlesGrid');
+            
+            if (articlesToRender.length === 0) {
+                grid.classList.add('hidden');
+                document.getElementById('noResults').classList.remove('hidden');
+                return;
+            }
+
+            grid.classList.remove('hidden');
+            document.getElementById('noResults').classList.add('hidden');
+
+            grid.innerHTML = articlesToRender.map(article => `
+                <article class="article-card">
+                    <div class="article-thumbnail ${article.category}">
+                        ${article.emoji}
+                    </div>
+                    <div class="article-card-content">
+                        <span class="article-category">${article.category}</span>
+                        <h3>${article.title}</h3>
+                        <p>${article.excerpt}</p>
+                        <div class="article-footer">
+                            <span class="article-date">${article.date}</span>
+                            <span class="article-read-time">${article.readTime} min read</span>
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        // FILTER ARTICLES
+        function filterArticles(category) {
+            currentFilter = category;
+            
+            // Update active filter button
+            document.querySelectorAll('.filter-tag').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target?.classList.add('active');
+
+            if (category === 'all') {
+                renderArticles(allArticles);
+            } else {
+                const filtered = allArticles.filter(a => 
+                    a.category === category || a.tags.includes(category)
+                );
+                renderArticles(filtered);
+            }
+        }
+
+        // SEARCH ARTICLES
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            
+            if (query.trim() === '') {
+                renderArticles(allArticles);
+                return;
+            }
+
+            const results = allArticles.filter(article =>
+                article.title.toLowerCase().includes(query) ||
+                article.excerpt.toLowerCase().includes(query) ||
+                article.tags.some(tag => tag.toLowerCase().includes(query))
+            );
+
+            renderArticles(results);
+        });
+
+        // DARK MODE TOGGLE
+        const themeToggle = document.getElementById('themeToggle');
+        const htmlElement = document.documentElement;
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        if (savedTheme === 'dark') {
+            htmlElement.classList.add('dark-mode');
+            themeToggle.textContent = '☀️';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            htmlElement.classList.toggle('dark-mode');
+            const isDark = htmlElement.classList.contains('dark-mode');
+            themeToggle.textContent = isDark ? '☀️' : '🌙';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+
+        // INITIAL RENDER
+        renderArticles();
+    </script>
+</body>
+</html>
