@@ -17,19 +17,41 @@ body {
     height: 100vh;
 }
 
-/* Sidebar */
+/* MOBILE HEADER */
+.mobile-header {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: #111827;
+    align-items: center;
+    padding: 0 10px;
+    z-index: 1000;
+}
+
+.mobile-header button {
+    font-size: 22px;
+    background: none;
+    border: none;
+    color: white;
+}
+
+.mobile-header .title {
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+/* SIDEBAR */
 .sidebar {
     width: 260px;
-    background: rgba(17, 24, 39, 0.9);
-    backdrop-filter: blur(10px);
+    background: rgba(17, 24, 39, 0.95);
     padding: 12px;
     overflow-y: auto;
 }
 
-h2 {
-    font-size: 18px;
-    margin-bottom: 10px;
-}
+h2 { font-size: 18px; }
 
 .search {
     width: 100%;
@@ -39,7 +61,6 @@ h2 {
     margin-bottom: 10px;
 }
 
-/* Channel card */
 .channel {
     display: flex;
     justify-content: space-between;
@@ -49,30 +70,20 @@ h2 {
     background: #1f2937;
     border-radius: 10px;
     cursor: pointer;
-    transition: 0.2s;
 }
 
-.channel:hover {
-    background: #374151;
-}
+.channel:hover { background: #374151; }
+.channel.active { background: #2563eb; }
 
-.channel.active {
-    background: #2563eb;
-}
+.heart { cursor: pointer; }
 
-.heart {
-    cursor: pointer;
-    font-size: 16px;
-}
-
-/* Player */
+/* PLAYER */
 .player {
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    position: relative;
 }
 
 video {
@@ -82,7 +93,7 @@ video {
     background: black;
 }
 
-/* Controls */
+/* CONTROLS */
 .controls {
     margin-top: 10px;
     display: flex;
@@ -99,32 +110,62 @@ button {
     cursor: pointer;
 }
 
-button:hover {
-    background: #1d4ed8;
-}
+button:hover { background: #1d4ed8; }
 
-/* Top bar */
-.topbar {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    display: flex;
-    gap: 10px;
+/* MOBILE */
+@media (max-width: 768px) {
+
+    .mobile-header { display: flex; }
+
+    body { flex-direction: column; }
+
+    .sidebar {
+        position: fixed;
+        top: 50px;
+        left: -260px;
+        height: calc(100% - 50px);
+        transition: 0.3s;
+        z-index: 999;
+    }
+
+    .sidebar.open { left: 0; }
+
+    .player { margin-top: 50px; width: 100%; }
+
+    video { width: 100%; border-radius: 0; }
+
+    .controls {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0,0,0,0.85);
+        padding: 10px;
+        justify-content: center;
+    }
+
+    button { flex: 1; font-size: 14px; }
 }
 </style>
 </head>
 
 <body>
 
-<div class="sidebar">
-    <h2>📺 তাকবো না, টিভি</h2>
-    <input class="search" placeholder="Search channels..." oninput="searchChannels(this.value)">
+<!-- HEADER -->
+<div class="mobile-header">
+    <button onclick="toggleMenu()">☰</button>
+    <div class="title">📺 তাকবো না, টিভি</div>
+</div>
 
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>📺 Channels</h2>
+    <input class="search" placeholder="Search..." oninput="searchChannels(this.value)">
     <div id="channelList"></div>
 </div>
 
+<!-- PLAYER -->
 <div class="player">
-
     <video id="video" controls autoplay></video>
 
     <div class="controls">
@@ -144,12 +185,15 @@ const channels = [
 
 let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
 let currentSpeed = 1;
-let currentIndex = 0;
-
 const video = document.getElementById("video");
 let hls;
 
-/* ---------- Render Channels ---------- */
+/* MENU */
+function toggleMenu() {
+    document.querySelector(".sidebar").classList.toggle("open");
+}
+
+/* RENDER */
 function renderChannels(list = channels) {
     const container = document.getElementById("channelList");
     container.innerHTML = "";
@@ -175,10 +219,8 @@ function renderChannels(list = channels) {
     });
 }
 
-/* ---------- Load Channel ---------- */
+/* LOAD CHANNEL */
 function loadChannel(index) {
-    currentIndex = index;
-    localStorage.setItem("lastChannel", index);
 
     document.querySelectorAll(".channel").forEach(c => c.classList.remove("active"));
     document.querySelectorAll(".channel")[index]?.classList.add("active");
@@ -198,7 +240,7 @@ function loadChannel(index) {
     video.play();
 }
 
-/* ---------- Favorites ---------- */
+/* FAVORITES */
 function toggleFavorite(name) {
     if (favorites.includes(name)) {
         favorites = favorites.filter(f => f !== name);
@@ -209,7 +251,7 @@ function toggleFavorite(name) {
     renderChannels();
 }
 
-/* ---------- Search ---------- */
+/* SEARCH */
 function searchChannels(query) {
     const filtered = channels.filter(c =>
         c.name.toLowerCase().includes(query.toLowerCase())
@@ -217,7 +259,7 @@ function searchChannels(query) {
     renderChannels(filtered);
 }
 
-/* ---------- PiP ---------- */
+/* PiP */
 function togglePiP() {
     if (document.pictureInPictureElement) {
         document.exitPictureInPicture();
@@ -226,7 +268,7 @@ function togglePiP() {
     }
 }
 
-/* ---------- Fullscreen ---------- */
+/* FULLSCREEN */
 function toggleFullscreen() {
     if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen();
@@ -235,7 +277,7 @@ function toggleFullscreen() {
     }
 }
 
-/* ---------- Speed ---------- */
+/* SPEED */
 function changeSpeed() {
     const speeds = [0.75, 1, 1.25, 1.5, 2];
     let i = speeds.indexOf(currentSpeed);
@@ -244,16 +286,12 @@ function changeSpeed() {
     alert("Speed: " + currentSpeed + "x");
 }
 
-/* ---------- Restore Last Channel ---------- */
-function init() {
-    renderChannels();
-
-    const last = localStorage.getItem("lastChannel");
-    loadChannel(last ? parseInt(last) : 0);
-}
-
-init();
+/* INIT */
+renderChannels();
+loadChannel(0);
 </script>
 
 </body>
 </html>
+
+
