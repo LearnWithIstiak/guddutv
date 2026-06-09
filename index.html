@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Premium IPTV Pro</title>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0b0f19;
+    color: white;
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 260px;
+    background: rgba(17, 24, 39, 0.9);
+    backdrop-filter: blur(10px);
+    padding: 12px;
+    overflow-y: auto;
+}
+
+h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.search {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    margin-bottom: 10px;
+}
+
+/* Channel card */
+.channel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin: 6px 0;
+    background: #1f2937;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.channel:hover {
+    background: #374151;
+}
+
+.channel.active {
+    background: #2563eb;
+}
+
+.heart {
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Player */
+.player {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+video {
+    width: 92%;
+    max-height: 80vh;
+    border-radius: 14px;
+    background: black;
+}
+
+/* Controls */
+.controls {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+/* Top bar */
+.topbar {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+    <h2>📺 তাকবো না, টিভি</h2>
+    <input class="search" placeholder="Search channels..." oninput="searchChannels(this.value)">
+
+    <div id="channelList"></div>
+</div>
+
+<div class="player">
+
+    <video id="video" controls autoplay></video>
+
+    <div class="controls">
+        <button onclick="togglePiP()">PiP</button>
+        <button onclick="toggleFullscreen()">Fullscreen</button>
+        <button onclick="changeSpeed()">Speed</button>
+    </div>
+</div>
+
+<script>
+const channels = [
+    { name: "BTV", url: "https://owrcovcrpy.gpcdn.net/bpk-tv/1709/output/1709-audio_113392_eng=113200-video=2202800.m3u8" },
+    { name: "T-Sports", url: "https://tvsen7.aynaott.com/tsports-hd/tracks-v1a1/mono.ts.m3u8" },
+    { name: "FIFA", url: "https://tvsen7.aynaott.com/foxsports2/index.m3u8" },
+    { name: "Somoy TV", url: "https://owrcovcrpy.gpcdn.net/bpk-tv/1702/output/1702-audio_113322_eng=113200-video=2202800.m3u8" }
+];
+
+let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+let currentSpeed = 1;
+let currentIndex = 0;
+
+const video = document.getElementById("video");
+let hls;
+
+/* ---------- Render Channels ---------- */
+function renderChannels(list = channels) {
+    const container = document.getElementById("channelList");
+    container.innerHTML = "";
+
+    list.forEach((ch, index) => {
+        const isFav = favorites.includes(ch.name);
+
+        const div = document.createElement("div");
+        div.className = "channel";
+        div.innerHTML = `
+            <span>${ch.name}</span>
+            <span class="heart">${isFav ? "❤️" : "🤍"}</span>
+        `;
+
+        div.onclick = () => loadChannel(index);
+
+        div.querySelector(".heart").onclick = (e) => {
+            e.stopPropagation();
+            toggleFavorite(ch.name);
+        };
+
+        container.appendChild(div);
+    });
+}
+
+/* ---------- Load Channel ---------- */
+function loadChannel(index) {
+    currentIndex = index;
+    localStorage.setItem("lastChannel", index);
+
+    document.querySelectorAll(".channel").forEach(c => c.classList.remove("active"));
+    document.querySelectorAll(".channel")[index]?.classList.add("active");
+
+    const url = channels[index].url;
+
+    if (hls) hls.destroy();
+
+    if (Hls.isSupported()) {
+        hls = new Hls();
+        hls.loadSource(url);
+        hls.attachMedia(video);
+    } else {
+        video.src = url;
+    }
+
+    video.play();
+}
+
+/* ---------- Favorites ---------- */
+function toggleFavorite(name) {
+    if (favorites.includes(name)) {
+        favorites = favorites.filter(f => f !== name);
+    } else {
+        favorites.push(name);
+    }
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+    renderChannels();
+}
+
+/* ---------- Search ---------- */
+function searchChannels(query) {
+    const filtered = channels.filter(c =>
+        c.name.toLowerCase().includes(query.toLowerCase())
+    );
+    renderChannels(filtered);
+}
+
+/* ---------- PiP ---------- */
+function togglePiP() {
+    if (document.pictureInPictureElement) {
+        document.exitPictureInPicture();
+    } else {
+        video.requestPictureInPicture();
+    }
+}
+
+/* ---------- Fullscreen ---------- */
+function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+    } else {
+        document.exitFullscreen();
+    }
+}
+
+/* ---------- Speed ---------- */
+function changeSpeed() {
+    const speeds = [0.75, 1, 1.25, 1.5, 2];
+    let i = speeds.indexOf(currentSpeed);
+    currentSpeed = speeds[(i + 1) % speeds.length];
+    video.playbackRate = currentSpeed;
+    alert("Speed: " + currentSpeed + "x");
+}
+
+/* ---------- Restore Last Channel ---------- */
+function init() {
+    renderChannels();
+
+    const last = localStorage.getItem("lastChannel");
+    loadChannel(last ? parseInt(last) : 0);
+}
+
+init();
+</script>
+
+</body>
+</html>
